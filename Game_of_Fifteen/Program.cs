@@ -19,6 +19,11 @@ namespace Game_of_Fifteen
             puzzle.DrawGrid();
             puzzle.CreateArray();
             puzzle.PrintArray();
+
+            while (true)
+            {
+                puzzle.MoveCursor();
+            }
         }
 
         static void ChoiceField(Puzzle obj) 
