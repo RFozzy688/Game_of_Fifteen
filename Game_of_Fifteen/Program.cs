@@ -15,7 +15,8 @@ namespace Game_of_Fifteen
             ChoiceField(puzzle);
             ChoiceShuffle(puzzle);
 
-            Console.WriteLine($"field: {puzzle.SizeField} shuffle: {puzzle.MethodShuffle}");
+            Console.Clear();
+            puzzle.DrawGrid();
         }
 
         static void ChoiceField(Puzzle obj) 
