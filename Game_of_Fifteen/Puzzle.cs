@@ -22,12 +22,18 @@ namespace Game_of_Fifteen
         public int value;
         public Point pos;
     }
+    struct Indexes
+    {
+        public int i;
+        public int j;
+    }
     internal class Puzzle
     {
         public Fields SizeField { get; set; }
         public Shuffle MethodShuffle { get; set; }
         private Number[,] _array;
         private Point _currentCursorPos;
+        private Indexes _currentIndexes;
         public void DrawGrid()
         {
             int top = 4;
@@ -166,6 +172,9 @@ namespace Game_of_Fifteen
             }
 
             _array[_array.GetLength(0) - 1, _array.GetLength(1) - 1].value = 0;
+
+            _currentIndexes.i = _array.GetLength(0) - 1;
+            _currentIndexes.j = _array.GetLength(1) - 1;
         }
         public void PrintArray()
         {
@@ -226,6 +235,13 @@ namespace Game_of_Fifteen
         {
             if (_currentCursorPos.X + 7 <= lastPosX)
             {
+                Swap(_currentIndexes.i, _currentIndexes.j, _currentIndexes.i, _currentIndexes.j + 1);
+
+                PrintCell(_currentIndexes.i, _currentIndexes.j);
+                PrintCell(_currentIndexes.i, _currentIndexes.j + 1);
+
+                _currentIndexes.j += 1;
+
                 _currentCursorPos.X += 7;
             }
         }
@@ -233,6 +249,13 @@ namespace Game_of_Fifteen
         {
             if (_currentCursorPos.X - 7 >= 13)
             {
+                Swap(_currentIndexes.i, _currentIndexes.j, _currentIndexes.i, _currentIndexes.j - 1);
+
+                PrintCell(_currentIndexes.i, _currentIndexes.j);
+                PrintCell(_currentIndexes.i, _currentIndexes.j - 1);
+
+                _currentIndexes.j -= 1;
+
                 _currentCursorPos.X -= 7;
             }
         }
@@ -240,6 +263,13 @@ namespace Game_of_Fifteen
         {
             if (_currentCursorPos.Y - 4 >= 6)
             {
+                Swap(_currentIndexes.i, _currentIndexes.j, _currentIndexes.i - 1, _currentIndexes.j);
+
+                PrintCell(_currentIndexes.i, _currentIndexes.j);
+                PrintCell(_currentIndexes.i - 1, _currentIndexes.j);
+
+                _currentIndexes.i -= 1;
+
                 _currentCursorPos.Y -= 4;
             }
         }
@@ -247,7 +277,30 @@ namespace Game_of_Fifteen
         {
             if (_currentCursorPos.Y + 4 <= lastPosY)
             {
+                Swap(_currentIndexes.i, _currentIndexes.j, _currentIndexes.i + 1, _currentIndexes.j);
+
+                PrintCell(_currentIndexes.i, _currentIndexes.j);
+                PrintCell(_currentIndexes.i + 1, _currentIndexes.j);
+
+                _currentIndexes.i += 1;
+
                 _currentCursorPos.Y += 4;
+            }
+        }
+        private void Swap(int cur_i, int cur_j, int target_i, int target_j)
+        {
+            _array[cur_i, cur_j].value = _array[target_i, target_j].value;
+            _array[target_i, target_j].value = 0;
+        }
+        private void PrintCell(int index_i,  int index_j)
+        {
+            Console.SetCursorPosition(_array[index_i, index_j].pos.X, _array[index_i, index_j].pos.Y);
+            Console.Write("  ");
+            Console.SetCursorPosition(_array[index_i, index_j].pos.X, _array[index_i, index_j].pos.Y);
+
+            if (_array[index_i, index_j].value != 0)
+            {
+                Console.Write(_array[index_i, index_j].value);
             }
         }
     }
