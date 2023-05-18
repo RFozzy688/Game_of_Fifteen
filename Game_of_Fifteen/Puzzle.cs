@@ -16,10 +16,17 @@ namespace Game_of_Fifteen
         machine,
         hand
     }
+    struct Number
+    {
+        public int value;
+        public int posLeft;
+        public int posTop;
+    }
     internal class Puzzle
     {
         public Fields SizeField { get; set; }
         public Shuffle MethodShuffle { get; set; }
+        private Number[,] _array;
         public void DrawGrid()
         {
             int top = 4;
@@ -130,6 +137,52 @@ namespace Game_of_Fifteen
                     }
 
                     Console.Write(" ");
+                }
+            }
+        }
+        public void CreateArray()
+        {
+            _array = new Number[(int)SizeField, (int)SizeField];
+
+            int num = 1;
+
+            int left = 13;
+            int top = 6;
+
+            for (int i = 0; i < _array.GetLength(0); i++)
+            {
+                for (int j = 0;  j < _array.GetLength(1); j++)
+                {
+                    _array[i, j].value = num++;
+                    _array[i, j].posLeft = left;
+                    _array[i, j].posTop = top;
+
+                    left += 7;
+                }
+
+                top += 4;
+                left = 13;
+            }
+
+            _array[_array.GetLength(0) - 1, _array.GetLength(1) - 1].value = 0;
+        }
+
+        public void PrintArray()
+        {
+            for (int i = 0; i < _array.GetLength(0); i++)
+            {
+                for (int j = 0; j < _array.GetLength(1); j++)
+                {
+                    if (i == _array.GetLength(0) - 1 && j == _array.GetLength(1) - 1)
+                    {
+                        Console.SetCursorPosition(_array[i, j].posLeft, _array[i, j].posTop);
+                        Console.Write(" ");
+                    }
+                    else
+                    {
+                        Console.SetCursorPosition(_array[i, j].posLeft, _array[i, j].posTop);
+                        Console.Write(_array[i, j].value);
+                    }
                 }
             }
         }

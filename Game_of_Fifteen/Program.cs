@@ -17,6 +17,8 @@ namespace Game_of_Fifteen
 
             Console.Clear();
             puzzle.DrawGrid();
+            puzzle.CreateArray();
+            puzzle.PrintArray();
         }
 
         static void ChoiceField(Puzzle obj) 
