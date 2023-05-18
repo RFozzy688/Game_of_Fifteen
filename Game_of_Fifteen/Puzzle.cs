@@ -6,9 +6,20 @@ using System.Threading.Tasks;
 
 namespace Game_of_Fifteen
 {
+    enum Fields
+    {
+        field_3x3,
+        field_4x4
+    }
+    enum Shuffle
+    {
+        machine,
+        hand
+    }
     internal class Puzzle
     {
-        private int _sizeField;
-        private int _methodShuffle;
+        public Fields SizeField { get; set; }
+        public Shuffle MethodShuffle { get; set; }
+        //public void DrawGrid()
     }
 }
