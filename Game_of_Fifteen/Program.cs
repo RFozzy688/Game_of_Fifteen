@@ -10,17 +10,19 @@ namespace Game_of_Fifteen
     {
         static void Main(string[] args)
         {
-            int fieldSelection = 0, initialShuffle = 0;
+            Puzzle puzzle = new Puzzle();
 
-            ChoiceField(ref fieldSelection);
-            ChoiceShuffle(ref initialShuffle);
+            ChoiceField(puzzle);
+            ChoiceShuffle(puzzle);
 
-            Console.WriteLine($"field: {fieldSelection} shuffle: {initialShuffle}");
+            Console.Clear();
+            puzzle.DrawGrid();
         }
 
-        static void ChoiceField(ref int fieldSelection) 
+        static void ChoiceField(Puzzle obj) 
         {
             ConsoleKeyInfo consoleKeyInfo;
+            int fieldSelection = 0;
 
             while (fieldSelection != 49 && fieldSelection != 50) // code 49 => 1
             {
@@ -37,13 +39,14 @@ namespace Game_of_Fifteen
 
             switch (fieldSelection)
             {
-                case 49: fieldSelection = 1; break;
-                case 50: fieldSelection = 2; break;
+                case 49: obj.SizeField = Fields.field_3x3; break;
+                case 50: obj.SizeField = Fields.field_4x4; break;
             }
         }
-        static void ChoiceShuffle(ref int initialShuffle)
+        static void ChoiceShuffle(Puzzle obj)
         {
             ConsoleKeyInfo consoleKeyInfo;
+            int initialShuffle = 0;
 
             while (initialShuffle != 49 && initialShuffle != 50) // code 49 => 1
             {
@@ -60,8 +63,8 @@ namespace Game_of_Fifteen
 
             switch (initialShuffle)
             {
-                case 49: initialShuffle = 1; break;
-                case 50: initialShuffle = 2; break;
+                case 49: obj.MethodShuffle = Shuffle.machine; break;
+                case 50: obj.MethodShuffle = Shuffle.hand; break;
             }
         }
     }
