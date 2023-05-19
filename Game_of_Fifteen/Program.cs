@@ -22,7 +22,15 @@ namespace Game_of_Fifteen
             puzzle.DrawGrid();
             puzzle.CreateArray();
             puzzle.PrintArray();
-            puzzle.MachineShuffle();
+
+            if (puzzle.GetMethodShuffle() == Shuffle.machine)
+            {
+                puzzle.MachineShuffle();
+            }
+            else
+            {
+                puzzle.HandShuffle();
+            }
 
             while (true)
             {

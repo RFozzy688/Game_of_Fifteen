@@ -44,12 +44,12 @@ namespace Game_of_Fifteen
                 case 49: 
                     _sizeField = Fields.field_3x3;
                     _lastPosX = 27;
-                    _lastPosY = 14;
+                    _lastPosY = 18;
                     break;
                 case 50: 
                     _sizeField = Fields.field_4x4;
                     _lastPosX = 34;
-                    _lastPosY = 18;
+                    _lastPosY = 22;
                     break;
             }
 
@@ -59,9 +59,10 @@ namespace Game_of_Fifteen
                 case 50: _methodShuffle = Shuffle.hand; break;
             }
         }
+        public Shuffle GetMethodShuffle() { return _methodShuffle; }
         public void DrawGrid()
         {
-            int top = 4;
+            int top = 5;
             int left = 10;
             int horizontalLenght = 7 * (int)_sizeField;
             int verticalLenght = 4 * (int)_sizeField;
@@ -179,7 +180,7 @@ namespace Game_of_Fifteen
             int num = 1;
 
             int left = 13;
-            int top = 6;
+            int top = 7;
 
             for (int i = 0; i < _array.GetLength(0); i++)
             {
@@ -221,7 +222,7 @@ namespace Game_of_Fifteen
 
             _currentCursorPos = new Point(Console.CursorLeft, Console.CursorTop);
         }
-        public void MoveCursor()
+        public ConsoleKeyInfo MoveCursor()
         {
             ConsoleKeyInfo key = Console.ReadKey();
 
@@ -243,6 +244,8 @@ namespace Game_of_Fifteen
             }
 
             Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
+
+            return key;
         }
         private void MoveRight()
         {
@@ -338,6 +341,26 @@ namespace Game_of_Fifteen
                     directionMove[direction]();
                 }
             }
+        }
+        public void HandShuffle()
+        {
+            Console.SetCursorPosition(10, 3);
+            Console.Write("Для старта нажмите - ENTER");
+            Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
+
+            while (true)
+            {
+                if (MoveCursor().Key == ConsoleKey.Enter)
+                {
+                    break;
+                }
+            }
+
+            PrintCell(_currentIndexes.i, _currentIndexes.j);
+
+            Console.SetCursorPosition(0, 3);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
         }
     }
 }
