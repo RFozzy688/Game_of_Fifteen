@@ -59,7 +59,6 @@ namespace Game_of_Fifteen
                 case 50: _methodShuffle = Shuffle.hand; break;
             }
         }
-        public Shuffle GetMethodShuffle() { return _methodShuffle; }
         public void DrawGrid()
         {
             int top = 5;
@@ -321,9 +320,16 @@ namespace Game_of_Fifteen
         }
         public void ShufflePuzzle()
         {
-
+            if (_methodShuffle == Shuffle.machine)
+            {
+                MachineShuffle();
+            }
+            else
+            {
+                HandShuffle();
+            }
         }
-        public void MachineShuffle()
+        private void MachineShuffle()
         {
             Random random = new Random();
             int direction;
@@ -342,7 +348,7 @@ namespace Game_of_Fifteen
                 }
             }
         }
-        public void HandShuffle()
+        private void HandShuffle()
         {
             Console.SetCursorPosition(10, 3);
             Console.Write("Для старта нажмите - ENTER");
