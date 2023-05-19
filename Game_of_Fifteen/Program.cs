@@ -28,6 +28,14 @@ namespace Game_of_Fifteen
             while (true)
             {
                 puzzle.MoveCursor();
+
+                if (puzzle.IsCheckOnGameOver() == true)
+                {
+                    Console.SetCursorPosition(10, 3);
+                    Console.Write("Игра окончена");
+
+                    break;
+                }
             }
         }
 

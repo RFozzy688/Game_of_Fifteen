@@ -368,5 +368,23 @@ namespace Game_of_Fifteen
             Console.Write(new string(' ', Console.BufferWidth));
             Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
         }
+        public bool IsCheckOnGameOver() 
+        {
+            int count = 1;
+
+            for (int i = 0; i < _array.GetLength(0); i++)
+            {
+                for (int j = 0; j < _array.GetLength(1); j++)
+                {
+                    if (_array[i, j].value != count) { return false; }
+
+                    count++;
+
+                    if (_sizeField == Fields.field_4x4 && count == 16) { break; }
+                    if (_sizeField == Fields.field_3x3 && count == 9) { break; }
+                }
+            }
+            return true;
+        }
     }
 }
