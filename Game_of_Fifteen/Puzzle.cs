@@ -29,17 +29,41 @@ namespace Game_of_Fifteen
     }
     internal class Puzzle
     {
-        public Fields SizeField { get; set; }
-        public Shuffle MethodShuffle { get; set; }
+        private Fields _sizeField;
+        private Shuffle _methodShuffle;
         private Number[,] _array;
         private Point _currentCursorPos;
         private Indexes _currentIndexes;
+        private int _lastPosX;
+        private int _lastPosY;
+        public Puzzle(int sizeField, int methodShuffle)
+        {
+            switch (sizeField)
+            {
+                case 49: 
+                    _sizeField = Fields.field_3x3;
+                    _lastPosX = 27;
+                    _lastPosY = 14;
+                    break;
+                case 50: 
+                    _sizeField = Fields.field_4x4;
+                    _lastPosX = 34;
+                    _lastPosY = 18;
+                    break;
+            }
+
+            switch (methodShuffle)
+            {
+                case 49: _methodShuffle = Shuffle.machine; break;
+                case 50: _methodShuffle = Shuffle.hand; break;
+            }
+        }
         public void DrawGrid()
         {
             int top = 4;
             int left = 10;
-            int horizontalLenght = 7 * (int)SizeField;
-            int verticalLenght = 4 * (int)SizeField;
+            int horizontalLenght = 7 * (int)_sizeField;
+            int verticalLenght = 4 * (int)_sizeField;
 
             Console.SetCursorPosition(left, top);
 
@@ -149,7 +173,7 @@ namespace Game_of_Fifteen
         }
         public void CreateArray()
         {
-            _array = new Number[(int)SizeField, (int)SizeField];
+            _array = new Number[(int)_sizeField, (int)_sizeField];
 
             int num = 1;
 
@@ -199,18 +223,6 @@ namespace Game_of_Fifteen
         public void MoveCursor()
         {
             ConsoleKeyInfo key = Console.ReadKey();
-            int lastPosX, lastPosY;
-
-            if (SizeField == Fields.field_3x3)
-            {
-                lastPosX = 27;
-                lastPosY = 14;
-            }
-            else
-            {
-                lastPosX = 34;
-                lastPosY = 18;
-            }
 
             if (key.Key == ConsoleKey.LeftArrow)
             {
@@ -218,7 +230,7 @@ namespace Game_of_Fifteen
             }
             else if (key.Key == ConsoleKey.RightArrow)
             {
-                MoveRight(lastPosX);
+                MoveRight();
             }
             else if (key.Key == ConsoleKey.UpArrow)
             {
@@ -226,14 +238,14 @@ namespace Game_of_Fifteen
             }
             else if (key.Key == ConsoleKey.DownArrow)
             {
-                MoveDown(lastPosY);
+                MoveDown();
             }
 
             Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
         }
-        private void MoveRight(int lastPosX)
+        private void MoveRight()
         {
-            if (_currentCursorPos.X + 7 <= lastPosX)
+            if (_currentCursorPos.X + 7 <= _lastPosX)
             {
                 Swap(_currentIndexes.i, _currentIndexes.j, _currentIndexes.i, _currentIndexes.j + 1);
 
@@ -273,9 +285,9 @@ namespace Game_of_Fifteen
                 _currentCursorPos.Y -= 4;
             }
         }
-        private void MoveDown(int lastPosY)
+        private void MoveDown()
         {
-            if (_currentCursorPos.Y + 4 <= lastPosY)
+            if (_currentCursorPos.Y + 4 <= _lastPosY)
             {
                 Swap(_currentIndexes.i, _currentIndexes.j, _currentIndexes.i + 1, _currentIndexes.j);
 
@@ -302,6 +314,10 @@ namespace Game_of_Fifteen
             {
                 Console.Write(_array[index_i, index_j].value);
             }
+        }
+        public void ShufflePuzzle()
+        {
+
         }
     }
 }
