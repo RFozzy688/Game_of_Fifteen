@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Game_of_Fifteen
 {
@@ -16,16 +17,54 @@ namespace Game_of_Fifteen
         machine,
         hand
     }
+    struct Number
+    {
+        public int value;
+        public Point pos;
+    }
+    struct Indexes
+    {
+        public int i;
+        public int j;
+    }
+    public delegate void DelegateMoveCursor();
     internal class Puzzle
     {
-        public Fields SizeField { get; set; }
-        public Shuffle MethodShuffle { get; set; }
+        private Fields _sizeField;
+        private Shuffle _methodShuffle;
+        private Number[,] _array;
+        private Point _currentCursorPos;
+        private Indexes _currentIndexes;
+        private int _lastPosX;
+        private int _lastPosY;
+        public Puzzle(int sizeField, int methodShuffle)
+        {
+            switch (sizeField)
+            {
+                case 49: 
+                    _sizeField = Fields.field_3x3;
+                    _lastPosX = 27;
+                    _lastPosY = 18;
+                    break;
+                case 50: 
+                    _sizeField = Fields.field_4x4;
+                    _lastPosX = 34;
+                    _lastPosY = 22;
+                    break;
+            }
+
+            switch (methodShuffle)
+            {
+                case 49: _methodShuffle = Shuffle.machine; break;
+                case 50: _methodShuffle = Shuffle.hand; break;
+            }
+        }
         public void DrawGrid()
         {
-            int top = 4;
+            int top = 5;
             int left = 10;
-            int horizontalLenght = 7 * (int)SizeField;
-            int verticalLenght = 4 * (int)SizeField;
+            int horizontalLenght = 7 * (int)_sizeField;
+            int verticalLenght = 4 * (int)_sizeField;
 
             Console.SetCursorPosition(left, top);
 
@@ -132,6 +171,220 @@ namespace Game_of_Fifteen
                     Console.Write(" ");
                 }
             }
+        }
+        public void CreateArray()
+        {
+            _array = new Number[(int)_sizeField, (int)_sizeField];
+
+            int num = 1;
+
+            int left = 13;
+            int top = 7;
+
+            for (int i = 0; i < _array.GetLength(0); i++)
+            {
+                for (int j = 0;  j < _array.GetLength(1); j++)
+                {
+                    _array[i, j].value = num++;
+                    _array[i, j].pos.X = left;
+                    _array[i, j].pos.Y = top;
+
+                    left += 7;
+                }
+
+                top += 4;
+                left = 13;
+            }
+
+            _array[_array.GetLength(0) - 1, _array.GetLength(1) - 1].value = 0;
+
+            _currentIndexes.i = _array.GetLength(0) - 1;
+            _currentIndexes.j = _array.GetLength(1) - 1;
+        }
+        public void PrintArray()
+        {
+            for (int i = 0; i < _array.GetLength(0); i++)
+            {
+                for (int j = 0; j < _array.GetLength(1); j++)
+                {
+                    if (i == _array.GetLength(0) - 1 && j == _array.GetLength(1) - 1)
+                    {
+                        Console.SetCursorPosition(_array[i, j].pos.X, _array[i, j].pos.Y);
+                    }
+                    else
+                    {
+                        Console.SetCursorPosition(_array[i, j].pos.X, _array[i, j].pos.Y);
+                        Console.Write(_array[i, j].value);
+                    }
+                }
+            }
+
+            _currentCursorPos = new Point(Console.CursorLeft, Console.CursorTop);
+        }
+        public ConsoleKeyInfo MoveCursor()
+        {
+            ConsoleKeyInfo key = Console.ReadKey();
+
+            if (key.Key == ConsoleKey.LeftArrow)
+            {
+                MoveLeft();
+            }
+            else if (key.Key == ConsoleKey.RightArrow)
+            {
+                MoveRight();
+            }
+            else if (key.Key == ConsoleKey.UpArrow)
+            {
+                MoveUp();
+            }
+            else if (key.Key == ConsoleKey.DownArrow)
+            {
+                MoveDown();
+            }
+
+            Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
+
+            return key;
+        }
+        private void MoveRight()
+        {
+            if (_currentCursorPos.X + 7 <= _lastPosX)
+            {
+                Swap(_currentIndexes.i, _currentIndexes.j, _currentIndexes.i, _currentIndexes.j + 1);
+
+                PrintCell(_currentIndexes.i, _currentIndexes.j);
+                PrintCell(_currentIndexes.i, _currentIndexes.j + 1);
+
+                _currentIndexes.j += 1;
+
+                _currentCursorPos.X += 7;
+            }
+        }
+        private void MoveLeft()
+        {
+            if (_currentCursorPos.X - 7 >= 13)
+            {
+                Swap(_currentIndexes.i, _currentIndexes.j, _currentIndexes.i, _currentIndexes.j - 1);
+
+                PrintCell(_currentIndexes.i, _currentIndexes.j);
+                PrintCell(_currentIndexes.i, _currentIndexes.j - 1);
+
+                _currentIndexes.j -= 1;
+
+                _currentCursorPos.X -= 7;
+            }
+        }
+        private void MoveUp()
+        {
+            if (_currentCursorPos.Y - 4 >= 6)
+            {
+                Swap(_currentIndexes.i, _currentIndexes.j, _currentIndexes.i - 1, _currentIndexes.j);
+
+                PrintCell(_currentIndexes.i, _currentIndexes.j);
+                PrintCell(_currentIndexes.i - 1, _currentIndexes.j);
+
+                _currentIndexes.i -= 1;
+
+                _currentCursorPos.Y -= 4;
+            }
+        }
+        private void MoveDown()
+        {
+            if (_currentCursorPos.Y + 4 <= _lastPosY)
+            {
+                Swap(_currentIndexes.i, _currentIndexes.j, _currentIndexes.i + 1, _currentIndexes.j);
+
+                PrintCell(_currentIndexes.i, _currentIndexes.j);
+                PrintCell(_currentIndexes.i + 1, _currentIndexes.j);
+
+                _currentIndexes.i += 1;
+
+                _currentCursorPos.Y += 4;
+            }
+        }
+        private void Swap(int cur_i, int cur_j, int target_i, int target_j)
+        {
+            _array[cur_i, cur_j].value = _array[target_i, target_j].value;
+            _array[target_i, target_j].value = 0;
+        }
+        private void PrintCell(int index_i,  int index_j)
+        {
+            Console.SetCursorPosition(_array[index_i, index_j].pos.X, _array[index_i, index_j].pos.Y);
+            Console.Write("  ");
+            Console.SetCursorPosition(_array[index_i, index_j].pos.X, _array[index_i, index_j].pos.Y);
+
+            if (_array[index_i, index_j].value != 0)
+            {
+                Console.Write(_array[index_i, index_j].value);
+            }
+        }
+        public void ShufflePuzzle()
+        {
+            if (_methodShuffle == Shuffle.machine)
+            {
+                MachineShuffle();
+            }
+            else
+            {
+                HandShuffle();
+            }
+        }
+        private void MachineShuffle()
+        {
+            Random random = new Random();
+            int direction;
+            int count;
+
+            DelegateMoveCursor[] directionMove = { MoveLeft, MoveDown, MoveRight, MoveUp };
+
+            for (int i = 0; i < 1000; i++)
+            {
+                direction = random.Next(0, 4);
+                count = random.Next(0, 4);
+
+                for (int j = 1; j <= count; j++)
+                {
+                    directionMove[direction]();
+                }
+            }
+        }
+        private void HandShuffle()
+        {
+            Console.SetCursorPosition(10, 3);
+            Console.Write("Для старта нажмите - ENTER");
+            Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
+
+            while (true)
+            {
+                if (MoveCursor().Key == ConsoleKey.Enter)
+                {
+                    break;
+                }
+            }
+
+            PrintCell(_currentIndexes.i, _currentIndexes.j);
+
+            Console.SetCursorPosition(0, 3);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
+        }
+        public bool IsCheckOnGameOver() 
+        {
+            int count = 1;
+
+            for (int i = 0; i < _array.GetLength(0); i++)
+            {
+                for (int j = 0; j < _array.GetLength(1); j++)
+                {
+                    if (_array[i, j].value != count) { return false; }
+
+                    count++;
+
+                    if (_sizeField == Fields.field_4x4 && count == 16) { break; }
+                    if (_sizeField == Fields.field_3x3 && count == 9) { break; }
+                }
+            }
+            return true;
         }
     }
 }

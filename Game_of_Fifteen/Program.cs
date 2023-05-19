@@ -10,19 +10,38 @@ namespace Game_of_Fifteen
     {
         static void Main(string[] args)
         {
-            Puzzle puzzle = new Puzzle();
+            int fieldSelection = 0;
+            int initialShuffle = 0;
 
-            ChoiceField(puzzle);
-            ChoiceShuffle(puzzle);
+            ChoiceField(ref fieldSelection);
+            ChoiceShuffle(ref initialShuffle);
+
+            Puzzle puzzle = new Puzzle(fieldSelection, initialShuffle);
 
             Console.Clear();
             puzzle.DrawGrid();
+            puzzle.CreateArray();
+            puzzle.PrintArray();
+
+            puzzle.ShufflePuzzle();
+
+            while (true)
+            {
+                puzzle.MoveCursor();
+
+                if (puzzle.IsCheckOnGameOver() == true)
+                {
+                    Console.SetCursorPosition(10, 3);
+                    Console.Write("Игра окончена");
+
+                    break;
+                }
+            }
         }
 
-        static void ChoiceField(Puzzle obj) 
+        static void ChoiceField(ref int fieldSelection) 
         {
             ConsoleKeyInfo consoleKeyInfo;
-            int fieldSelection = 0;
 
             while (fieldSelection != 49 && fieldSelection != 50) // code 49 => 1
             {
@@ -36,17 +55,10 @@ namespace Game_of_Fifteen
 
                 fieldSelection = Convert.ToInt32(consoleKeyInfo.KeyChar);
             }
-
-            switch (fieldSelection)
-            {
-                case 49: obj.SizeField = Fields.field_3x3; break;
-                case 50: obj.SizeField = Fields.field_4x4; break;
-            }
         }
-        static void ChoiceShuffle(Puzzle obj)
+        static void ChoiceShuffle(ref int initialShuffle)
         {
             ConsoleKeyInfo consoleKeyInfo;
-            int initialShuffle = 0;
 
             while (initialShuffle != 49 && initialShuffle != 50) // code 49 => 1
             {
@@ -59,12 +71,6 @@ namespace Game_of_Fifteen
                 consoleKeyInfo = Console.ReadKey();
 
                 initialShuffle = Convert.ToInt32(consoleKeyInfo.KeyChar);
-            }
-
-            switch (initialShuffle)
-            {
-                case 49: obj.MethodShuffle = Shuffle.machine; break;
-                case 50: obj.MethodShuffle = Shuffle.hand; break;
             }
         }
     }
