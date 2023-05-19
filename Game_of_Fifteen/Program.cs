@@ -22,6 +22,7 @@ namespace Game_of_Fifteen
             puzzle.DrawGrid();
             puzzle.CreateArray();
             puzzle.PrintArray();
+            puzzle.MachineShuffle();
 
             while (true)
             {

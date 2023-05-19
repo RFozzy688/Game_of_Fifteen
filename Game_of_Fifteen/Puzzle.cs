@@ -27,6 +27,7 @@ namespace Game_of_Fifteen
         public int i;
         public int j;
     }
+    public delegate void DelegateMoveCursor();
     internal class Puzzle
     {
         private Fields _sizeField;
@@ -318,6 +319,25 @@ namespace Game_of_Fifteen
         public void ShufflePuzzle()
         {
 
+        }
+        public void MachineShuffle()
+        {
+            Random random = new Random();
+            int direction;
+            int count;
+
+            DelegateMoveCursor[] directionMove = { MoveLeft, MoveDown, MoveRight, MoveUp };
+
+            for (int i = 0; i < 1000; i++)
+            {
+                direction = random.Next(0, 4);
+                count = random.Next(0, 4);
+
+                for (int j = 1; j <= count; j++)
+                {
+                    directionMove[direction]();
+                }
+            }
         }
     }
 }
