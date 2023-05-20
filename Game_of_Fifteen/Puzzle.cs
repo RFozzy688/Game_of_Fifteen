@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Timers;
 
 namespace Game_of_Fifteen
 {
@@ -37,6 +38,10 @@ namespace Game_of_Fifteen
         private Indexes _currentIndexes;
         private int _lastPosX;
         private int _lastPosY;
+        private static DateTime timeStart;
+        private static Timer timer;
+        private string _formatStr = @"hh\:mm\:ss";
+        private int _count;
         public Puzzle(int sizeField, int methodShuffle)
         {
             switch (sizeField)
@@ -58,6 +63,8 @@ namespace Game_of_Fifteen
                 case 49: _methodShuffle = Shuffle.machine; break;
                 case 50: _methodShuffle = Shuffle.hand; break;
             }
+
+            _count = 0;
         }
         public void DrawGrid()
         {
@@ -225,24 +232,33 @@ namespace Game_of_Fifteen
         {
             ConsoleKeyInfo key = Console.ReadKey();
 
-            if (key.Key == ConsoleKey.LeftArrow)
+            if (CheckKey(key))
             {
-                MoveLeft();
-            }
-            else if (key.Key == ConsoleKey.RightArrow)
-            {
-                MoveRight();
-            }
-            else if (key.Key == ConsoleKey.UpArrow)
-            {
-                MoveUp();
-            }
-            else if (key.Key == ConsoleKey.DownArrow)
-            {
-                MoveDown();
-            }
+                if (key.Key == ConsoleKey.LeftArrow)
+                {
+                    MoveLeft();
+                }
+                else if (key.Key == ConsoleKey.RightArrow)
+                {
+                    MoveRight();
+                }
+                else if (key.Key == ConsoleKey.UpArrow)
+                {
+                    MoveUp();
+                }
+                else if (key.Key == ConsoleKey.DownArrow)
+                {
+                    MoveDown();
+                }
 
-            Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
+                Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
+
+                if (key.Key == ConsoleKey.LeftArrow || key.Key == ConsoleKey.RightArrow ||
+                    key.Key == ConsoleKey.UpArrow || key.Key == ConsoleKey.DownArrow)
+                {
+                    _count++;
+                }
+            }
 
             return key;
         }
@@ -385,6 +401,56 @@ namespace Game_of_Fifteen
                 }
             }
             return true;
+        }
+        public void StartTimer()
+        {
+            timeStart = DateTime.Now;
+            timer = new Timer();
+
+            timer.Interval = 1000;
+            timer.AutoReset = true;
+            timer.Enabled = true;
+            timer.Elapsed += OnTimedEvent;
+        }
+        public void StopTimer() 
+        { 
+            timer.Stop();
+            timer.Dispose();
+        }
+        private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            TimeSpan interval = DateTime.Now - timeStart;
+
+            Console.SetCursorPosition(10, 1);
+            Console.Write($"Время: {interval.ToString(_formatStr)}");
+            Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
+        }
+        public void PrintCount()
+        {
+            Console.SetCursorPosition(10, 2);
+            Console.Write($"Количество ходов: {_count}");
+            Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
+        }
+        public void ResetCount()
+        {
+            _count = 0;
+        }
+        private bool CheckKey(ConsoleKeyInfo key)
+        {
+            if (key.Key == ConsoleKey.LeftArrow || key.Key == ConsoleKey.RightArrow ||
+                key.Key == ConsoleKey.UpArrow || key.Key == ConsoleKey.DownArrow ||
+                key.Key == ConsoleKey.Enter || key.Key == ConsoleKey.Escape)
+            {
+                return true;
+            }
+            else
+            {
+                Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
+                Console.Write(" ");
+                Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
+
+                return false;
+            }
         }
     }
 }
