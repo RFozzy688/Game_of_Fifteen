@@ -374,6 +374,11 @@ namespace Game_of_Fifteen
             {
                 if (MoveCursor().Key == ConsoleKey.Enter)
                 {
+                    if (_count == 0)
+                    {
+                        continue;
+                    }
+
                     break;
                 }
             }

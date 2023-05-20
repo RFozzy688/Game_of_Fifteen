@@ -12,37 +12,72 @@ namespace Game_of_Fifteen
         {
             int fieldSelection = 0;
             int initialShuffle = 0;
-
-            ChoiceField(ref fieldSelection);
-            ChoiceShuffle(ref initialShuffle);
-
-            Puzzle puzzle = new Puzzle(fieldSelection, initialShuffle);
-
-            Console.Clear();
-
-            puzzle.DrawGrid();
-            puzzle.CreateArray();
-            puzzle.PrintArray();
-
-            puzzle.ShufflePuzzle();
-            puzzle.StartTimer();
-
+            ConsoleKeyInfo key;
 
             while (true)
             {
-                puzzle.MoveCursor();
-                puzzle.PrintCount();
+                ChoiceField(ref fieldSelection);
+                ChoiceShuffle(ref initialShuffle);
 
-                if (puzzle.IsCheckOnGameOver() == true)
+                Puzzle puzzle = new Puzzle(fieldSelection, initialShuffle);
+
+                fieldSelection = 0;
+                initialShuffle = 0;
+
+                while (true)
                 {
-                    Console.SetCursorPosition(10, 3);
-                    Console.Write("Игра окончена");
+                    Console.Clear();
 
-                    break;
+                    puzzle.DrawGrid();
+                    puzzle.CreateArray();
+                    puzzle.PrintArray();
+
+                    Console.SetCursorPosition(10, 3);
+                    Console.Write("Закончить игру - ESC");
+
+                    puzzle.ShufflePuzzle();
+                    puzzle.StartTimer();
+                    puzzle.ResetCount();
+
+                    while (true)
+                    {
+                        key = puzzle.MoveCursor();
+                        puzzle.PrintCount();
+
+                        if (key.Key == ConsoleKey.Escape)
+                        {
+                            break;
+                        }
+
+                        if (puzzle.IsCheckOnGameOver() == true)
+                        {
+                            break;
+                        }
+                    }
+
+                    puzzle.StopTimer();
+                    puzzle.ResetCount();
+
+                    while (true)
+                    {
+                        Console.SetCursorPosition(10, 3);
+                        Console.Write("Начать заново - ENTER | Выйти в меню - ESC");
+                        Console.SetCursorPosition(0, 4);
+                        Console.Write(new string(' ', Console.BufferWidth));
+                        Console.SetCursorPosition(10, 4);
+                        Console.Write("> ");
+
+                        key = Console.ReadKey();
+
+                        if (key.Key == ConsoleKey.Enter || key.Key == ConsoleKey.Escape) 
+                        { 
+                            break;
+                        }
+                    }
+
+                    if (key.Key == ConsoleKey.Escape) { break; }
                 }
             }
-
-            puzzle.StopTimer();
         }
 
         static void ChoiceField(ref int fieldSelection) 
