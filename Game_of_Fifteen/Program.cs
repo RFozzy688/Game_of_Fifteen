@@ -31,6 +31,7 @@ namespace Game_of_Fifteen
             while (true)
             {
                 puzzle.MoveCursor();
+                puzzle.PrintCount();
 
                 if (puzzle.IsCheckOnGameOver() == true)
                 {
