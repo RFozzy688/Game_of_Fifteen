@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Timers;
 
 namespace Game_of_Fifteen
 {
@@ -37,6 +38,9 @@ namespace Game_of_Fifteen
         private Indexes _currentIndexes;
         private int _lastPosX;
         private int _lastPosY;
+        private static DateTime timeStart;
+        private static Timer timer;
+        private string formatStr = @"hh\:mm\:ss";
         public Puzzle(int sizeField, int methodShuffle)
         {
             switch (sizeField)
@@ -385,6 +389,29 @@ namespace Game_of_Fifteen
                 }
             }
             return true;
+        }
+        public void StartTimer()
+        {
+            timeStart = DateTime.Now;
+            timer = new Timer();
+
+            timer.Interval = 1000;
+            timer.AutoReset = true;
+            timer.Enabled = true;
+            timer.Elapsed += OnTimedEvent;
+        }
+        public void StopTimer() 
+        { 
+            timer.Stop();
+            timer.Dispose();
+        }
+        private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            TimeSpan interval = DateTime.Now - timeStart;
+
+            Console.SetCursorPosition(10, 1);
+            Console.Write($"Время: {interval.ToString(formatStr)}");
+            Console.SetCursorPosition(_currentCursorPos.X, _currentCursorPos.Y);
         }
     }
 }

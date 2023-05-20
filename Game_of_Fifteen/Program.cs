@@ -19,11 +19,14 @@ namespace Game_of_Fifteen
             Puzzle puzzle = new Puzzle(fieldSelection, initialShuffle);
 
             Console.Clear();
+
             puzzle.DrawGrid();
             puzzle.CreateArray();
             puzzle.PrintArray();
 
             puzzle.ShufflePuzzle();
+            puzzle.StartTimer();
+
 
             while (true)
             {
@@ -37,6 +40,8 @@ namespace Game_of_Fifteen
                     break;
                 }
             }
+
+            puzzle.StopTimer();
         }
 
         static void ChoiceField(ref int fieldSelection) 
